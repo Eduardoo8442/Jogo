@@ -1,0 +1,1 @@
+export const api = 'URL DO SEU BACKEND(ex: http://localhost:3001)';
