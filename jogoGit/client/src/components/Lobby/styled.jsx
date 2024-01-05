@@ -1,12 +1,34 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+.user {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  user-select: none;
+  &:hover {
+    background-color: #a1989839;
+  }
+}
 `;
 export const EmbedOnline = styled.div`
 margin: auto;
 border: 3px solid black;
 width: 200px;
 height: 300px;
+overflow-y: auto;
+  svg {
+    color: yellow;
+    
+}
+`;
+export const Image = styled.img`
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
+
 `;
 export const EmbedChat = styled.div`
 margin: auto;
@@ -30,9 +52,8 @@ flex-direction: column;
     background-color: #7a791c; 
   }
 `;
-export const Nick = styled.p`
+export const Nick = styled.span`
 color: white;
-margin-left: 10px;
 font-family: sans-serif;
 `;
 export const ContainerEmbed = styled.div`

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Container, Nick, EmbedOnline, EmbedChat, PChat, Paragrafo, ButtonInit, ContainerEmbed, Button, Input } from './styled';
+import { Container, Nick, EmbedOnline, EmbedChat, Image, PChat, Paragrafo, ButtonInit, ContainerEmbed, Button, Input } from './styled';
 import { useSelector, useDispatch } from "react-redux";
 import { api } from '../../config/api';
 import axios from 'axios';
@@ -8,12 +8,14 @@ import { getRandomNumber } from "../../functions/random";
 import { toast, ToastContainer } from 'react-toastify';
 import { party as partyState } from '../../store/actions/index';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaCrown } from "react-icons/fa6";
 export default function Lobby() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const socket = useSelector(state => state.setSocket.setSocket);
     const nick = useSelector(state => state.setNick.setNick);
     const party = useSelector(state => state.setParty.setParty);
+    const imageme = useSelector(state => state.setImagem.imagem);
     const [players, setPlayers] = useState([]);
     const [mensagem, setMensagem] = useState([]);
     const inputRef = useRef();
@@ -28,17 +30,18 @@ export default function Lobby() {
             console.log(id)
              if(Number(id) === Number(party.idServer)) {
                 setPlayers(current => []);
-                console.log('limpo', players)
+                socket.emit('cleared', { nome: nick, id: party.idServer, host: party.host, foto: imageme });
              }
-            socket.emit('cleared', { nome: nick, id: party.idServer, host: party.host });
         });
-            socket.on('updatePlayers', ({ nome, id, host}) => {
-                console.log(host)
+            socket.on('updatePlayers', ({ nome, id, host, foto}) => {
+                console.log(Number(id) === Number(party.idServer), id, party.idServer)
               if(Number(id) === Number(party.idServer)) { 
+                console.log('servidor atualizado')
                 setPlayers(current => {
                     const date = {
                       nome: nome,
                       host: host,
+                      foto: foto
                     }
                     console.log([...current, date])                    
                      return [...current, date]
@@ -107,13 +110,28 @@ export default function Lobby() {
         <Container>
           <ContainerEmbed>
         <EmbedOnline>
-        <Paragrafo>Jogadores</Paragrafo>
+        <Paragrafo>Jogadores ({players.length})</Paragrafo>
         {players.map((player, index) => (
                         <div key={index}>
                             {player ?  (
-                              player.host === true ? <Nick>{player.nome}(host) </Nick> : <Nick>{player.nome} </Nick>
+                              player.host === true ? (
+
+
+
+                                <div className="user">
+                                <Image src={player.foto} />
+                                <Nick> {player.nome}  <FaCrown />  </Nick> 
+                                </div>
+
+
+                              ) : ( 
+                                 <div className="user"> 
+                                <Image src={player.foto} />
+                                <Nick> {player.nome} </Nick> 
+                                </div>
+                                )
                             ) : null }
-                            
+                              
                         </div>
                     ))}
         </EmbedOnline>

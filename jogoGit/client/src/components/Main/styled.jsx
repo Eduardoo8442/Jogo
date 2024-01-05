@@ -9,6 +9,14 @@ margin-top: 80px;
 display: flex;
 flex-direction: column;
 `;
+export const Image = styled.img`
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+`;
 export const Button = styled.button`
 background-color: #201f1f;
 color: white;
