@@ -9,6 +9,7 @@ const cors = require('cors');
 const axios = require('axios');
 const io = connectSocket(server);
 const mongoose = require('mongoose');
+app.use('/uploads', express.static('uploads'));
  const CreateServer = require('./models/serverSchema');
 connectDb();
 const corsOptions = {
@@ -71,8 +72,8 @@ io.on('connection', socket => {
       socket.data.usuario = dados;
     io.emit('clearList', { id: dados.idServer});
     });
-    socket.on('cleared', ({ nome, id, host }) => {
-    io.emit('updatePlayers', { id: id, nome: nome, host: host });
+    socket.on('cleared', ({ nome, id, host, foto }) => {
+    io.emit('updatePlayers', { id: id, nome: nome, host: host, foto: foto });
     });
     socket.on('CreateServer', ({name, serverName, idServer, usuario, online}) => {
         const novoServidor = new CreateServer({

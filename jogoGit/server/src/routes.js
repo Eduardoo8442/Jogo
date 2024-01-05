@@ -1,6 +1,8 @@
 const express = require('express');
 const routes = express.Router();
 const CreateServer = require('./models/serverSchema');
+const multerConfig = require('./config/multer');
+
 routes.get('/getlist', (req, res) => {
     CreateServer.find({})
     .then((documentos) => {
@@ -11,6 +13,15 @@ routes.get('/getlist', (req, res) => {
       console.error('Erro ao buscar servidor:', erro);
     });
 });
+routes.post('/upload', multerConfig.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json('Nenhum arquivo foi enviado.');
+  }
+const filePath = req.file.path;
+const imageLink = `${process.env.URL}/uploads/${filePath.replace('uploads/', '')}`;
+res.status(200).json({ imageLink });
+});
+
 routes.post('/entrada', async (req, res) => {
   const id = req.body.id;
   if (!id) {
