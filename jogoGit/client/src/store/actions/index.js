@@ -16,3 +16,9 @@ export const nick = (novoDado) => {
           payload: novoDado,
         };
       };
+      export const imagem = (novoDado) => {
+        return {
+          type: 'IMAGEM',
+          payload: novoDado,
+        };
+      };

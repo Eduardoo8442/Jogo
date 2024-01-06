@@ -1,6 +1,32 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+.exit {
+  color: red;
+}
+.alignitens {
+  display: flex;
+  align-items: center;
+}
+.prohibited {
+
+  color: #0bff0b;
+  margin-left: 1px;
+  svg {
+    font-size: 20px;
+  }
+}
+.perfil {
+display: flex;
+align-items: center;
+}
+.textChat {
+  margin-top: 4px;
+  margin-left: 25px;
+}
+.formatChat {
+  margin-bottom: 10px;
+}
 .user {
   display: flex;
   align-items: center;
@@ -39,17 +65,17 @@ overflow-y: auto;
 display: flex;
 flex-direction: column;
 &::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
   }
 
   &::-webkit-scrollbar-track {
     background-color: #101011;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: #ffef11;
+    background-color: #5f5f52;
   }
   &::-webkit-scrollbar-thumb:hover {
-    background-color: #7a791c; 
+    background-color: #9e9e8f; 
   }
 `;
 export const Nick = styled.span`
@@ -68,7 +94,6 @@ font-family: sans-serif;
 margin-left: 10px;
 `;
 export const PChat = styled.span`
-color: white;
 font-weight: bold;
 font-family: sans-serif;
 `;

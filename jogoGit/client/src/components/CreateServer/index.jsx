@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { party } from '../../store/actions/index';
 import { getRandomNumber } from "../../functions/random";
+import Back from "../Back";
 export default function CreateServer() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -38,6 +39,7 @@ export default function CreateServer() {
     }
     return (
         <Container>
+         <Back />
             <Embed>
              <Titulo>Criar servidor</Titulo>
              <Paragrafo>Nome servidor</Paragrafo>

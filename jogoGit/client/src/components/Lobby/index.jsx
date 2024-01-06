@@ -9,6 +9,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import { party as partyState } from '../../store/actions/index';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaCrown } from "react-icons/fa6";
+import Back from "../Back";
+import { IoExitSharp } from "react-icons/io5";
 export default function Lobby() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -25,7 +27,7 @@ export default function Lobby() {
            const dados = party;
            axios.post(`${api}/entrada`, { id: dados.idServer})
           .then(response => {
-           socket.emit('entrada', { dados: party});
+           socket.emit('entrada', { dados: party, nick: nick});
            socket.on('clearList', ({ id }) => {
             console.log(id)
              if(Number(id) === Number(party.idServer)) {
@@ -85,7 +87,7 @@ export default function Lobby() {
         const value = inputRef.current.value;
         if(!value) return;
         inputRef.current.value = '';
-        socket.emit('mensagem', { mensagem: value, nick: nick, id: party.idServer} );
+        socket.emit('mensagem', { mensagem: value, nick: nick, id: party.idServer, foto: imageme } );
     }
     function handleKeyDown(event) {
       if (event.key === 'Enter') {
@@ -100,7 +102,7 @@ export default function Lobby() {
     }, 100);
 } 
     function initParty() {
-     if(players.length < 2) toast.error("Poucos jogadores.", {
+     if(players.length < 2) return toast.error("Poucos jogadores.", {
         position: toast.POSITION.BOTTOM_CENTER
     });
     const query = getRandomNumber(0, players.length-1);
@@ -108,6 +110,7 @@ export default function Lobby() {
     }
     return(
         <Container>
+          <Back />
           <ContainerEmbed>
         <EmbedOnline>
         <Paragrafo>Jogadores ({players.length})</Paragrafo>
@@ -137,8 +140,27 @@ export default function Lobby() {
         </EmbedOnline>
         <EmbedChat ref={embedRef}>
         {mensagem.map((message, index) => (
-                        <div key={index}>
-                          {message.name}: <PChat>{message.text}</PChat>               
+                        <div className="formatChat" key={index}>
+                          {message.event === 'exit' ? (
+                                <div className="textChat alignitens exit">
+                                <PChat>{message.text} <IoExitSharp /></PChat>     
+                              </div>      
+                          ) : null }
+                          {message.event === 'prohibited' ? (
+                           <div className="textChat alignitens prohibited"> 
+                           <PChat>{message.text} </PChat>
+                         </div> 
+                          ) : null }
+                          {message.event === 'message' ? (
+                            <div>
+                            <div className="perfil">
+                                <Image src={message.foto} /> {message.name}:
+                                       </div>
+                                  <div className="textChat alignitens">
+                             <PChat>{message.text}</PChat>     
+                            </div>   
+                            </div>
+                          ) : null }        
                         </div>
                     ))}
                      <Input onKeyDown={handleKeyDown} ref={inputRef} placeholder="enviar mensagem" /> <Button onClick={handleMessage}>Enviar</Button>

@@ -14,7 +14,6 @@ export default function Main() {
     const dispatch = useDispatch();
     const socketState = useSelector(state => state.setSocket.setSocket);
     const imageme = useSelector(state => state.setImagem.imagem);
-
     useEffect(() => {
         const initializeSocket = async () => {
             if (!socketState) {
@@ -43,6 +42,7 @@ export default function Main() {
     }
     function handleServer() {
         const value = inputRef.current.value;
+        console.log(value)
         if (!value) return;
         dispatch(nick(value));
         navigate('/servers');
@@ -81,9 +81,16 @@ export default function Main() {
 
     return (
         <Container>
-            <label htmlFor="imageInput" style={{ cursor: 'pointer' }}>
+            
+              <div className="divMaeImage">
+              <div className="divImage">
+         <label className="" htmlFor="imageInput" style={{ cursor: 'pointer' }}>
          <Image id="imageButton" src={imageme} />
-          </label>
+         <p className="textImage">Foto</p>
+         </label>
+         </div>
+         </div>
+
           <input type="file" ref={fileInputRef} id="imageInput" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange}  capture="camera" />
 
             <Nameh1>Seu nick e foto</Nameh1>

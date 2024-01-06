@@ -1,1 +1,1 @@
-export const api = 'URL DO SEU BACKEND(ex: http://localhost:3001)';
+export const api = 'https://51dd2380930f9876477a903de73ed5d6.serveo.net';
