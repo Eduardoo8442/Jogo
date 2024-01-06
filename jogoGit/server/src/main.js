@@ -16,44 +16,64 @@ const corsOptions = {
   origin: process.env.URLFRONT,
 };
 app.use(cors(corsOptions));
+
 io.on('connection', socket => {
-    console.log(`Usuário ${socket.id} conectou.`);   
+
+  //functions
+  function removerUser(dados) {
+    if(dados) {
+      const id = dados.idServer || 0;
+      if(dados.host === false) {
+        io.emit('clearList', { id: socket.data.usuario.idServer});
+        axios.post(`${process.env.URL}/saida`, { id: dados.idServer})
+         .then(response => {
+          console.log(response.data);
+            })
+          .catch(error => {
+          console.log(error)
+         }); 
+      }
+      if(dados.host === true) {
+          CreateServer.findOneAndDelete({ idServer: dados.idServer })
+         .then((date) => {
+                 if (date) {
+           console.log('Servidor excluido', date);
+               } else {
+             console.log('Id servidor nao encontrado', dados.idServer);
+           }
+      })
+  .catch((erro) => {
+  console.error('Erro ao excluir servidor:', erro);
+  });
+      }
+    }
+  }
+
+//ouvintes sockets
+  console.log(`Usuário ${socket.id} conectou.`);   
     socket.on('disconnect', (text) => {
         console.log(socket.id, 'desconectou');
         const dados = socket.data.usuario;
-        if(dados) {
-        const id = dados.idServer || 0;
-        if(dados.host === false) {
-          io.emit('clearList', { id: socket.data.usuario.idServer});
-          axios.post(`${process.env.URL}/saida`, { id: dados.idServer})
-           .then(response => {
-            console.log(response.data);
-              })
-            .catch(error => {
-            console.log(error)
-           }); 
-        }
-        if(dados.host === true) {
-            CreateServer.findOneAndDelete({ idServer: dados.idServer })
-           .then((date) => {
-                   if (date) {
-             console.log('Servidor excluido', date);
-                 } else {
-               console.log('Id servidor nao encontrado', dados.idServer);
-             }
-        })
-   .catch((erro) => {
-    console.error('Erro ao excluir documento:', erro);
-  });
-
-        }
-        }
+        removerUser(dados);
     })
-    socket.on('mensagem', ({ mensagem=null, nick='desconhecido', id=0}) => {
+    socket.on('exitButton', ({ nick }) => {
+      const dados = socket.data.usuario;
+      io.emit('receive', {
+        text: `O ${nick} deixou a sala`,
+        name: nick,
+        id: dados.idServer,
+        foto: null,
+        event: 'exit',
+       });
+      removerUser(dados);
+    });
+    socket.on('mensagem', ({ mensagem=null, nick='desconhecido', id=0, foto='/image/perfil.png'}) => {
     io.emit('receive', {
      text: mensagem,
      name: nick,
      id: id,
+     foto: foto,
+     event: 'message',
     });
   });
     socket.on('initParty', ({ jogador, id }) => {
@@ -68,8 +88,15 @@ io.on('connection', socket => {
     socket.on('dica', ({ id, response}) => {
     io.emit('sendDica', { id: id, response: response });
     });
-    socket.on('entrada', ({ dados }) => {
+    socket.on('entrada', ({ dados, nick }) => {
       socket.data.usuario = dados;
+      io.emit('receive', {
+        text: `O ${nick} entrou na sala`,
+        name: nick,
+        id: dados.idServer,
+        foto: null,
+        event: 'prohibited',
+       });
     io.emit('clearList', { id: dados.idServer});
     });
     socket.on('cleared', ({ nome, id, host, foto }) => {
